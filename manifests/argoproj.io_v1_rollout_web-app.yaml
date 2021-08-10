@@ -1,61 +1,30 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  annotations:
-    getambassador.io/rolloutId: f8f1d4b4-c4bb-438b-ba70-653905d11358
-  creationTimestamp: null
+  name: web-app
+  namespace: emojivoto
   labels:
     app.kubernetes.io/name: web-app
     app.kubernetes.io/part-of: emojivoto
-  name: web-app
-  namespace: emojivoto
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: web-app
   strategy:
     canary:
-      canaryService: web-app-canary
       stableService: web-app
+      canaryService: web-app-canary
       steps:
       - setWeight: 10
       - pause:
-          duration: 12
-      - setWeight: 20
-      - pause:
-          duration: 12
-      - setWeight: 30
-      - pause:
-          duration: 12
-      - setWeight: 40
-      - pause:
-          duration: 12
-      - setWeight: 50
-      - pause:
-          duration: 12
-      - setWeight: 60
-      - pause:
-          duration: 12
-      - setWeight: 70
-      - pause:
-          duration: 12
-      - setWeight: 80
-      - pause:
-          duration: 12
-      - setWeight: 90
-      - pause:
-          duration: 12
-      - setWeight: 100
-      - pause:
-          duration: 12
+          duration: 10
       trafficRouting:
         ambassador:
           mappings:
           - web-app
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: web-app
         revision: 2021-07-29.01
@@ -66,7 +35,7 @@ spec:
           value: "80"
         - name: INDEX_BUNDLE
           value: dist/index_bundle.js
-        image: datawire/emojivoto-web-app:v12
+        image: datawire/emojivoto-web-app:v11
         imagePullPolicy: Always
         name: web-app
         ports:
@@ -76,6 +45,3 @@ spec:
           requests:
             cpu: 100m
       serviceAccountName: web-app
-status:
-  blueGreen: {}
-  canary: {}
