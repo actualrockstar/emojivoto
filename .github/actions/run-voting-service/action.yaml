@@ -10,11 +10,11 @@ runs:
     - name: "Install go packages"
       shell: bash
       run: |
-        go install -u github.com/golang/protobuf/protoc-gen-go
-        go install google.golang.org/protobuf/reflect/protoreflect@v1.26.0
-        go install google.golang.org/protobuf/runtime/protoimpl@v1.26.0
+        go get -u github.com/golang/protobuf/protoc-gen-go
+        go get google.golang.org/protobuf/reflect/protoreflect@v1.26.0
+        go get google.golang.org/protobuf/runtime/protoimpl@v1.26.0
     - name: "Run voting service"
       shell: bash
       run: |
-        make -C /emojivoto
-        GRPC_PORT=8081 go run emojivoto/emojivoto-voting-svc/cmd/server.go 1>/dev/null 2>/dev/null &
+        make local
+        GRPC_PORT=8081 go run emojivoto-voting-svc/cmd/server.go 1>/dev/null 2>/dev/null &
