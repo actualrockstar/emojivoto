@@ -1,0 +1,36 @@
+name: emoji-web-spec
+prerequisites:
+  - create: build-yarn
+  - create: go-build
+connection:
+  context: "kubecon-kluster2"
+workloads:
+  - name: web
+    namespace: emojivoto
+    intercepts:
+      - headers:
+          - name: x-intercept-id
+            value: "{{ .Telepresence.Username }}"
+        handler: go-run
+        previewURL:
+          enable: true
+        port: http
+handlers:
+  - name: build-yarn
+    script:
+      run: "cd emojivoto-web/webapp && yarn webpack-dev-server --port 8081 &"
+  - name: go-run
+    environment:
+      - name: WEB_PORT
+        value: '8080'
+      - name: VOTINGSVC_HOST
+        value: voting.emojivoto:8080
+      - name: EMOJISVC_HOST
+        value: emoji.emojivoto:8080
+      - name: WEBPACK_DEV_SERVER
+        value: http://localhost:8081
+    script:
+      run: "cd emojivoto-web/cmd && ./server"
+  - name: go-build
+    script:
+      run: "cd emojivoto-web/cmd && go build -gcflags='all=-N -l' -o server"
