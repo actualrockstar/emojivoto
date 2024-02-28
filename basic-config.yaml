@@ -1,0 +1,18 @@
+---
+apiVersion: getambassador.io/v3alpha1
+kind: Mapping
+metadata:
+  name: emojivoto-web
+spec:
+  hostname: "emoji.kjames.k736.net"
+  prefix: /
+  service: web-svc.emojivoto
+---
+apiVersion: getambassador.io/v3alpha1
+kind: Host
+metadata:
+  name: emoji-host
+spec:
+  hostname: emoji.kjames.k736.net
+  acmeProvider:
+    email: marekojames@datawire.io
